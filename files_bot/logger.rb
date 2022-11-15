@@ -3,7 +3,7 @@ require 'date'
 
 module Logger
 
-	def verificar_log
+	def Verificar_log
 		estado = true
 		fecha = Date.today
 		carpeta_log = File.join('.', 'files_log')
@@ -15,7 +15,7 @@ module Logger
 				end
 			else
 				Dir.mkdir(carpeta_log)
-				crear_archivo(carpeta_log, archivo_log)
+				Crear_archivo(carpeta_log, archivo_log)
 			end
 		rescue Exception => excepcion
 			estado = false
@@ -25,7 +25,7 @@ module Logger
 		end
 	end
 
-	def escribir_log(linea, tiempo = true)
+	def Escribir_log(linea, tiempo = true)
 		estado = true
 		fecha = Date.today
 		hora = DateTime.now.strftime('%T')
@@ -33,7 +33,7 @@ module Logger
 		archivo_log = "log-#{fecha}.txt"
 		begin
 			file_log = File.open(File.join(carpeta_log, archivo_log), 'a')
-			if tiempo
+			if tiempo then
 				file_log.write("  #{hora} - #{linea}\n")
 			else
 				file_log.write("#{linea}\n")
@@ -48,7 +48,7 @@ module Logger
 	end
 
 	private
-	def crear_archivo(carpeta_log, archivo_log)
+	def Crear_archivo(carpeta_log, archivo_log)
         estado = true
         begin
             file_log = File.new(File.join(carpeta_log, archivo_log), 'w')

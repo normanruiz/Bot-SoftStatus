@@ -3,7 +3,7 @@
 # AUTOR/ES            : Ruiz Norman
 # VERSION             : 1.00 estable.
 # FECHA DE CREACION   : 14/11/2022.
-# ULTIMA ACTUALIZACION: 14/11/2022.
+# ULTIMA ACTUALIZACION: 15/11/2022.
 # LICENCIA            : GPL (General Public License) - Version 3.
 #  **************************************************************************
 #  * El software libre no es una cuestion economica sino una cuestion etica *
@@ -67,6 +67,7 @@
 #                             INCLUSIONES PERSONALES
 #=============================================================================
 require './files_bot/logger.rb'
+require './files_bot/config.rb'
 
 #==============================================================================
 # DECLARACION DEL ESPACIO DE NOMBRES POR DEFECTO
@@ -81,59 +82,76 @@ require './files_bot/logger.rb'
 module Bot
     include Logger
 
+    @estado = 0
+
     def Run()
+        estado = true
         begin
             system('clear')
-            @estado = verificar_log()
+            estado = Verificar_log()
+
             puts("")
             mensaje = " #{'=' * 128}"
             puts(mensaje)
-            escribir_log(mensaje, false)
+            Escribir_log(mensaje, false)
             mensaje = " Iniciando SoftStatus's Bot..."
             puts(" " + mensaje)
-            escribir_log(mensaje)
+            Escribir_log(mensaje)
             mensaje = " #{'~' * 128}"
             puts(mensaje)
-            escribir_log(mensaje, false)
+            Escribir_log(mensaje, false)
+
+            #Cargo la configuracion desde un archivo
+            if estado then
+                config = Cargar_configuracion()
+                unless config then
+                    puts("canfig llego como false")
+                    estado = false
+                else
+                    estado = config[:parametros][:bot][:estado]
+                end
+            end
+
+
 
         rescue Exception => excepcion
-            @estado = false
+            @estado = 1
+            estado = false
             mensaje = " #{'-' * 128}"
             puts(mensaje)
-            escribir_log(mensaje, false)
+            Escribir_log(mensaje, false)
             mensaje = "ERROR - Ejecucion principal - #{excepcion.message}"
             puts("  " + mensaje)
-            escribir_log(mensaje)
+            Escribir_log(mensaje)
 
         ensure
-            unless @estado then
+            unless estado then
                 mensaje = " #{'-' * 128}"
                 puts(mensaje)
-                escribir_log(mensaje, false)
+                Escribir_log(mensaje, false)
                 mensaje = "ALERTA - Ejecucion principal - Se detiene el proceso, no se ejecutaran mas acciones..."
                 puts("  " + mensaje)
-                escribir_log(mensaje)
+                Escribir_log(mensaje)
             end
             mensaje = " #{'~' * 128}"
             puts(mensaje)
-            escribir_log(mensaje, false)
+            Escribir_log(mensaje, false)
             mensaje = "Finalizando SoftStatus's Bot..."
             puts("  " + mensaje)
-            escribir_log(mensaje)
+            Escribir_log(mensaje)
             mensaje = " #{'=' * 128}"
             puts(mensaje)
-            escribir_log(mensaje, false)
+            Escribir_log(mensaje, false)
             puts("")
             return @estado
         end
     end
 end
 
-include Bot
-
 #==============================================================================
 # LLAMADA DE INICIO
 #------------------------------------------------------------------------------
+include Bot
 Run()
 
 #=============================================================================
